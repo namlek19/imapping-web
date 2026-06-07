@@ -352,45 +352,10 @@ export default function EventsPage() {
             <p className="text-sm text-gray-500 mt-1">Dùng điểm tích lũy để nhận ưu đãi hấp dẫn</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {VOUCHERS.map((v) => {
-              const enough = points >= v.cost;
-              return (
-                <div
-                  key={v.id}
-                  className={[
-                    "rounded-2xl border p-5 flex flex-col gap-3 transition-all duration-200",
-                    enough ? "bg-white border-slate-200 shadow-md" : "bg-gray-50 border-gray-200 opacity-60",
-                  ].join(" ")}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="text-3xl">{v.icon}</span>
-                    <span className={[
-                      "text-xs font-bold px-2.5 py-1 rounded-full tabular-nums",
-                      enough ? "bg-teal-50 text-[#008080]" : "bg-gray-100 text-gray-400",
-                    ].join(" ")}>
-                      {v.cost} điểm
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-900">{v.label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{v.description}</p>
-                  </div>
-                  <button
-                    onClick={() => handleRedeem(v.cost, v.label, v.voucherType)}
-                    disabled={!enough}
-                    className={[
-                      "w-full py-2.5 rounded-xl text-sm font-bold transition-all duration-200",
-                      enough
-                        ? "bg-accent text-white hover:bg-[#e86e3f] active:scale-[0.98]"
-                        : "bg-gray-200 text-gray-400 cursor-not-allowed",
-                    ].join(" ")}
-                  >
-                    {enough ? "Đổi ngay" : `Cần thêm ${v.cost - points} điểm`}
-                  </button>
-                </div>
-              );
-            })}
+          <div className="flex flex-col items-center justify-center gap-3 py-10 rounded-2xl border border-dashed border-gray-200 bg-gray-50/60 text-center">
+            <span className="text-4xl">🚧</span>
+            <p className="font-bold text-gray-700">Tính năng đang phát triển</p>
+            <p className="text-sm text-gray-400">Kho voucher sẽ sớm được ra mắt, hãy chờ nhé!</p>
           </div>
         </section>
 

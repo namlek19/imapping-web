@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, CheckCircle2, X, CalendarDays, Users, FileText } from "lucide-react";
+import { Loader2, CheckCircle2, X, CalendarDays, Users, FileText, Phone } from "lucide-react";
 
 interface BookingModalProps {
   locationId: number | string;
@@ -16,6 +16,7 @@ export default function BookingModal({ locationId, locationName, onClose }: Book
   const [stage, setStage]               = useState<Stage>("form");
   const [bookingDate, setBookingDate]   = useState("");
   const [numberOfPeople, setNumberOfPeople] = useState(1);
+  const [phone, setPhone]               = useState("");
   const [note, setNote]                 = useState("");
   const [errorMsg, setErrorMsg]         = useState("");
 
@@ -32,6 +33,7 @@ export default function BookingModal({ locationId, locationName, onClose }: Book
           locationId: Number(locationId),
           bookingDate: new Date(bookingDate).toISOString().replace("Z", ""),
           numberOfPeople,
+          phoneNumber: phone.trim(),
           note: note.trim() || undefined,
         }),
       });
@@ -138,6 +140,22 @@ export default function BookingModal({ locationId, locationName, onClose }: Book
                     +
                   </button>
                 </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex flex-col gap-1.5">
+                <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <Phone className="w-3.5 h-3.5" />
+                  Số điện thoại
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="VD: 0901 234 567"
+                  className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-300 outline-none transition focus:border-[#008080] focus:ring-2 focus:ring-[#008080]/20"
+                />
               </div>
 
               {/* Note */}

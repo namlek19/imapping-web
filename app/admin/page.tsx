@@ -166,6 +166,7 @@ function StatCard({
 interface Order {
   id: string;
   user: string;
+  phone: string;
   location: string;
   numberOfPeople: number;
   bookingDate: string;
@@ -200,6 +201,7 @@ function OrderHistoryTab() {
           setOrders(body.data.map((b: Record<string, unknown>) => ({
             id: String(b.id),
             user: String(b.userName ?? b.userId ?? "—"),
+            phone: String(b.phoneNumber ?? "—"),
             location: String(b.locationName ?? b.locationId ?? "—"),
             numberOfPeople: Number(b.numberOfPeople ?? 1),
             bookingDate: String(b.bookingDate ?? ""),
@@ -420,11 +422,12 @@ function OrderHistoryTab() {
             </div>
             <div className="px-6 py-4 flex flex-col gap-3 text-sm">
               {[
-                { label: "Khách hàng",  value: viewOrder.user },
-                { label: "Địa điểm",   value: viewOrder.location },
-                { label: "Số người",   value: `${viewOrder.numberOfPeople} người` },
-                { label: "Ngày đặt",   value: fmtDate(viewOrder.bookingDate) },
-                { label: "Ghi chú",    value: viewOrder.note || "—" },
+                { label: "Khách hàng",   value: viewOrder.user },
+                { label: "Số điện thoại", value: viewOrder.phone },
+                { label: "Địa điểm",    value: viewOrder.location },
+                { label: "Số người",    value: `${viewOrder.numberOfPeople} người` },
+                { label: "Ngày đặt",    value: fmtDate(viewOrder.bookingDate) },
+                { label: "Ghi chú",     value: viewOrder.note || "—" },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between items-start gap-4">
                   <span className="text-gray-400 shrink-0">{label}</span>
