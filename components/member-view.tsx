@@ -92,7 +92,7 @@ export default function MemberView({ matches = [] }: MemberViewProps) {
       </div>
 
       {showModal && (
-        <MatchModal matches={matches} onClose={() => setShowModal(false)} />
+        <MatchModal matches={matches.slice(0, 5)} onClose={() => setShowModal(false)} />
       )}
     </main>
   );

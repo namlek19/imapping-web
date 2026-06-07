@@ -144,10 +144,10 @@ export default function ChatFab() {
         });
         const body = await res.json();
         if (body.status !== 200 || !body.data) {
-          const errMsg =
-            body.message?.includes("quiz") || body.data?.includes("Quiz")
-              ? "Bạn chưa hoàn thành bài trắc nghiệm. Vui lòng làm quiz trước để tôi có thể gợi ý địa điểm phù hợp nhé! 🎯"
-              : (body.message ?? "Không thể kết nối AI lúc này, thử lại sau nhé!");
+          const rawMsg = (body.message as string) ?? "";
+          const errMsg = rawMsg.toLowerCase().includes("quiz") || rawMsg.toLowerCase().includes("preference")
+            ? "Bạn chưa hoàn thành bài trắc nghiệm. Vui lòng làm quiz trước để tôi có thể gợi ý địa điểm phù hợp nhé! 🎯"
+            : "AI đang bận xíu, bạn thử lại sau nhé! 🙏";
           setMessages((prev) => [...prev, { from: "bot", text: errMsg }]);
         } else {
           setMessages((prev) => [...prev, { from: "bot", text: body.data }]);

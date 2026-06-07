@@ -146,6 +146,10 @@ export default function QuizPage() {
       if (body.status === 200) {
         setAiAdvice(body.data ?? "");
         setPhase("done");
+      } else if (body.status === 500) {
+        // Tags đã được lưu, chỉ phần AI bị lỗi → vẫn hiện done
+        setAiAdvice("");
+        setPhase("done");
       } else {
         setSubmitError(body.message ?? "Lưu thất bại, vui lòng thử lại.");
         setPhase("error");

@@ -27,7 +27,7 @@ export default function MatchModal({ matches, onClose }: MatchModalProps) {
         <div className="shrink-0 px-7 pt-7 pb-5 border-b border-gray-100 flex items-center justify-between">
           <div>
             <h3 className="text-xl font-bold text-gray-900">
-              Top địa điểm dành cho bạn
+              Top 5 địa điểm dành cho bạn
             </h3>
             <p className="text-xs text-gray-400 mt-0.5">Sắp xếp theo độ phù hợp giảm dần</p>
           </div>
@@ -42,7 +42,7 @@ export default function MatchModal({ matches, onClose }: MatchModalProps) {
 
         {/* List */}
         <ol className="overflow-y-auto divide-y divide-gray-100">
-          {matches.map((loc, idx) => (
+          {matches.slice(0, 5).map((loc, idx) => (
             <li key={loc.locationId}>
               <Link
                 href={`/locations/${loc.locationId}`}

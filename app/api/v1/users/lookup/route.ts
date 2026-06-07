@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from "next/server";
 import { BE_BASE, getAuthToken, authHeaders } from "@/app/api/v1/_lib/auth";
 

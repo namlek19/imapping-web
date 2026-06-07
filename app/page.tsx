@@ -7,6 +7,7 @@ import type { MatchedLocation } from "@/components/member-view";
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [matches, setMatches] = useState<MatchedLocation[]>([]);
+  const [loadingMatches, setLoadingMatches] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -14,6 +15,7 @@ export default function Home() {
     setIsLoggedIn(!!token);
 
     if (token && userId) {
+      setLoadingMatches(true);
       fetch(`/api/v1/locations/match/${userId}`)
         .then((r) => r.json())
         .then((body) => {
@@ -21,9 +23,10 @@ export default function Home() {
             setMatches(body.data);
           }
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => setLoadingMatches(false));
     }
   }, []);
 
-  return <GuestHero isLoggedIn={isLoggedIn} matches={matches} />;
+  return <GuestHero isLoggedIn={isLoggedIn} matches={matches} loadingMatches={loadingMatches} />;
 }

@@ -8,12 +8,13 @@ import type { MatchedLocation } from "@/components/member-view";
 interface GuestHeroProps {
   isLoggedIn?: boolean;
   matches?: MatchedLocation[];
+  loadingMatches?: boolean;
 }
 
-export default function GuestHero({ isLoggedIn = false, matches = [] }: GuestHeroProps) {
+export default function GuestHero({ isLoggedIn = false, matches = [], loadingMatches = false }: GuestHeroProps) {
   const [showModal, setShowModal] = useState(false);
   const top = matches[0];
-  const showSuggestion = isLoggedIn && !!top;
+  const showSuggestion = isLoggedIn && (loadingMatches || !!top);
 
   return (
     <main className="flex-1 flex flex-col relative">
@@ -57,35 +58,62 @@ export default function GuestHero({ isLoggedIn = false, matches = [] }: GuestHer
           {/* Right: AI suggestion card (logged-in only) */}
           {showSuggestion && (
             <div className="relative bg-surface rounded-2xl border border-slate-200/50 overflow-hidden shadow-sm shadow-slate-300/40">
-              <Link href={`/locations/${top.locationId}`} className="block">
-                <div className="h-1.5 w-full bg-linear-to-r from-[#008080] to-[#FF7F50]" />
-                <div className="p-6 pb-4 flex flex-col gap-4">
-                  <span className="text-xs font-semibold text-[#008080] uppercase tracking-widest">
-                    ✨ Gợi ý đặc biệt hôm nay
-                  </span>
-                  <div className="flex items-start justify-between gap-4">
-                    <h3 className="text-2xl font-bold text-gray-900 leading-tight">{top.name}</h3>
-                    <div className="shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-[#FFF3EE] border border-[#FF7F50]/20">
-                      <span className="text-xl font-black text-[#FF7F50] leading-none tabular-nums">
-                        {top.matchPercent}<span className="text-xs font-bold">%</span>
-                      </span>
-                      <span className="text-[9px] font-semibold text-[#FF7F50]/70 uppercase tracking-wide mt-0.5">phù hợp</span>
+              {loadingMatches ? (
+                /* Skeleton */
+                <div className="animate-pulse">
+                  <div className="h-1.5 w-full bg-gray-200" />
+                  <div className="p-6 pb-4 flex flex-col gap-4">
+                    <div className="h-3 w-32 bg-gray-200 rounded-full" />
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="h-7 w-48 bg-gray-200 rounded-xl" />
+                      <div className="shrink-0 w-16 h-16 rounded-2xl bg-gray-200" />
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="mt-0.5 shrink-0 w-1 h-16 rounded-full bg-gray-200" />
+                      <div className="flex-1 flex flex-col gap-2">
+                        <div className="h-3 w-full bg-gray-200 rounded-full" />
+                        <div className="h-3 w-4/5 bg-gray-200 rounded-full" />
+                        <div className="h-3 w-3/5 bg-gray-200 rounded-full" />
+                      </div>
                     </div>
                   </div>
-                  <div className="flex gap-3">
-                    <div className="mt-0.5 shrink-0 w-1 rounded-full bg-linear-to-b from-[#008080] to-[#FF7F50]" />
-                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">{top.matchReason}</p>
+                  <div className="px-6 pb-6">
+                    <div className="h-10 w-full bg-gray-200 rounded-2xl" />
                   </div>
                 </div>
-              </Link>
-              <div className="px-6 pb-6">
-                <button
-                  onClick={() => setShowModal(true)}
-                  className="w-full py-2.5 rounded-2xl border-2 border-[#008080] text-[#008080] text-sm font-bold hover:bg-[#008080] hover:text-white active:scale-[0.98] transition-all duration-200"
-                >
-                  Xem thêm các lựa chọn khác
-                </button>
-              </div>
+              ) : top ? (
+                <>
+                  <Link href={`/locations/${top.locationId}`} className="block">
+                    <div className="h-1.5 w-full bg-linear-to-r from-[#008080] to-[#FF7F50]" />
+                    <div className="p-6 pb-4 flex flex-col gap-4">
+                      <span className="text-xs font-semibold text-[#008080] uppercase tracking-widest">
+                        ✨ Gợi ý đặc biệt hôm nay
+                      </span>
+                      <div className="flex items-start justify-between gap-4">
+                        <h3 className="text-2xl font-bold text-gray-900 leading-tight">{top.name}</h3>
+                        <div className="shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-[#FFF3EE] border border-[#FF7F50]/20">
+                          <span className="text-xl font-black text-[#FF7F50] leading-none tabular-nums">
+                            {top.matchPercent}<span className="text-xs font-bold">%</span>
+                          </span>
+                          <span className="text-[9px] font-semibold text-[#FF7F50]/70 uppercase tracking-wide mt-0.5">phù hợp</span>
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <div className="mt-0.5 shrink-0 w-1 rounded-full bg-linear-to-b from-[#008080] to-[#FF7F50]" />
+                        <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">{top.matchReason}</p>
+                      </div>
+                    </div>
+                  </Link>
+                  <div className="px-6 pb-6">
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className="w-full py-2.5 rounded-2xl border-2 border-[#008080] text-[#008080] text-sm font-bold hover:bg-[#008080] hover:text-white active:scale-[0.98] transition-all duration-200"
+                    >
+                      Xem thêm các lựa chọn khác
+                    </button>
+                  </div>
+                </>
+              ) : null}
             </div>
           )}
         </div>
