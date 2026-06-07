@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  imapping_web:
+    build: .
+    container_name: imapping_web_fe
+    restart: always
+    ports:
+      - "3001:3000" # Đã đổi cổng Server thành 3001, đâm thẳng vào 3000 của Next.js
