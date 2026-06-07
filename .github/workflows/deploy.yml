@@ -3,7 +3,7 @@ name: Deploy iMapping Web to Server
 on:
   push:
     branches:
-      - main # Chạy khi có code đẩy lên nhánh main
+      - master # Sửa chỗ 1: Chạy khi có code đẩy lên nhánh master
 
 jobs:
   deploy:
@@ -22,7 +22,7 @@ jobs:
             echo "Bắt đầu triển khai Frontend..."
             cd /root/imapping-web || git clone https://github.com/namlek19/imapping-web.git /root/imapping-web
             cd /root/imapping-web
-            git pull origin main
+            git pull origin master # Sửa chỗ 2: Kéo code từ nhánh master
             docker compose up -d --build
             echo "Dọn dẹp image rác..."
             docker image prune -f
