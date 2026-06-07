@@ -1,26 +1,34 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes blob-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(140px, -110px) scale(1.1); }
+  66%       { transform: translate(-80px, 80px) scale(0.93); }
+}
+@keyframes blob-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-160px, 100px) scale(1.12); }
+  66%       { transform: translate(100px, -80px) scale(0.9); }
+}
+@keyframes blob-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(110px, 130px) scale(0.92); }
+  66%       { transform: translate(-130px, -90px) scale(1.1); }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+.blob-1 { animation: blob-drift-1 18s ease-in-out infinite; }
+.blob-2 { animation: blob-drift-2 22s ease-in-out infinite; }
+.blob-3 { animation: blob-drift-3 16s ease-in-out infinite; }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme {
+  --color-background: #faf7f2;
+  --color-surface:    #ffffff;
+  --color-primary:    #2d3436;
+  --color-secondary:  #64748B;
+  --color-accent:     #FF7F50;
 }

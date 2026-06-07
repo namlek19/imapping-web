@@ -1,0 +1,39 @@
+---
+description: "Rules for Next.js App Router, TypeScript, Tailwind CSS - iMapping Web Project."
+globs: **/*.{ts,tsx,js,jsx}
+alwaysApply: true
+---
+# Project Overview
+- **Name:** iMapping (Web Platform).
+- **Core USP:** Personalized travel destination recommendations using AI based on user personality and preferences.
+- **Tech Stack:** Next.js (App Router), TypeScript, Tailwind CSS (Frontend) | Java Spring Boot & MySQL (Backend).
+- **Crucial Rule:** This is a purely WEB-based project. Do NOT generate mobile-specific (React Native/Flutter) code.
+
+# Development Guidelines
+- Always use TypeScript interfaces/types for data models.
+- Build responsive, modern minimalist UI using Tailwind CSS.
+- Optimize performance: use lazy loading, Next/Image (WebP), and minimize re-renders.
+- Follow "person-first" tech philosophy: prioritize UX/UI that focuses on personal taste and smooth interactions.
+
+# Global API Response Format
+All APIs return Status 200 with this structure:
+{
+  "status": 200,
+  "message": "String message",
+  "data": <Specific Data>
+}
+
+# Backend API Endpoints (Java Spring Boot)
+1. **Auth:** POST `/api/v1/auth/register`, POST `/api/v1/auth/login` (returns JWT token).
+2. **Quiz/Preferences:** GET `/api/v1/quiz`, POST `/api/v1/quiz/submit/{userId}`.
+3. **Plans (Group Trips):** POST `/api/v1/plans` (Create), POST `/api/v1/plans/{planId}/members` (Invite), POST `/api/v1/plans/{planId}/itinerary` (Suggest), PUT `/api/v1/plans/{planId}/itinerary/reorder`, POST `/api/v1/plans/{planId}/itinerary/optimize`.
+4. **Expenses (Split Bill):** POST `/api/v1/expenses` (Record expense), GET `/api/v1/expenses/plan/{planId}/balances` (Simplify debts).
+5. **Locations (USP):** GET `/api/v1/locations/match/{userId}` (Returns AI matched places + % match).
+6. **AI Chat:** POST `/api/v1/chat/{userId}` (Returns String advice).
+7. **Gamification:** POST `/api/v1/gamification/checkin/{userId}` (Daily coin rewards).
+8. **Admin:** GET `/api/v1/admin/dashboard/metrics`, GET `/api/v1/admin/users/suspicious`.
+
+# AI Interaction Rules
+- Do NOT hallucinate third-party booking integrations (flights/hotels are removed).
+- Match frontend API calls (using fetch/axios) exactly with the provided backend endpoints.
+- Generate clean, modular components in `src/components`.
