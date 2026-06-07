@@ -181,12 +181,16 @@ function mapStatus(s: string): Order["status"] {
   return "PENDING";
 }
 
+const REJECT_PHRASE = "nam le dep trai";
+
 function OrderHistoryTab() {
   const [orders, setOrders]       = useState<Order[]>([]);
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState<string | null>(null);
   const [viewOrder, setViewOrder] = useState<Order | null>(null);
   const [updating, setUpdating]   = useState<string | null>(null);
+  const [rejectId, setRejectId]   = useState<string | null>(null);
+  const [rejectText, setRejectText] = useState("");
 
   useEffect(() => {
     fetch("/api/v1/admin/bookings")
@@ -316,7 +320,7 @@ function OrderHistoryTab() {
                             Chấp nhận
                           </button>
                           <button
-                            onClick={() => setStatus(o.id, "REJECTED")}
+                            onClick={() => { setRejectId(o.id); setRejectText(""); }}
                             disabled={updating === o.id}
                             className="px-3 py-1.5 rounded-lg border border-red-200 text-xs font-medium text-red-500 hover:bg-red-50 disabled:opacity-50 transition-colors"
                           >
@@ -332,6 +336,72 @@ function OrderHistoryTab() {
           </table>
         )}
       </div>
+
+      {/* Reject confirmation modal */}
+      {rejectId && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          onClick={() => { setRejectId(null); setRejectText(""); }}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-6 pt-6 pb-2 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-red-500">
+                  <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-base font-bold text-gray-900">Từ chối đơn #{rejectId}?</p>
+                <p className="text-sm text-gray-500 mt-0.5">Hành động này không thể hoàn tác.</p>
+              </div>
+            </div>
+            <div className="px-6 py-5 flex flex-col gap-4">
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Để xác nhận, hãy nhập chính xác cụm từ bên dưới vào ô:
+              </p>
+              <div className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-center">
+                <span className="font-mono text-sm font-semibold text-gray-800 select-all">{REJECT_PHRASE}</span>
+              </div>
+              <input
+                type="text"
+                value={rejectText}
+                onChange={(e) => setRejectText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && rejectText === REJECT_PHRASE) { setStatus(rejectId, "REJECTED"); setRejectId(null); setRejectText(""); }
+                  if (e.key === "Escape") { setRejectId(null); setRejectText(""); }
+                }}
+                placeholder="Nhập cụm từ xác nhận…"
+                autoFocus
+                className={`w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition font-mono ${
+                  rejectText && rejectText !== REJECT_PHRASE
+                    ? "border-red-300 bg-red-50 focus:ring-2 focus:ring-red-200"
+                    : rejectText === REJECT_PHRASE
+                    ? "border-emerald-400 bg-emerald-50 focus:ring-2 focus:ring-emerald-200"
+                    : "border-slate-200 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                }`}
+              />
+            </div>
+            <div className="px-6 pb-5 flex items-center justify-end gap-2">
+              <button
+                onClick={() => { setRejectId(null); setRejectText(""); }}
+                className="px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+              >
+                Huỷ
+              </button>
+              <button
+                onClick={() => { setStatus(rejectId, "REJECTED"); setRejectId(null); setRejectText(""); }}
+                disabled={rejectText !== REJECT_PHRASE || updating === rejectId}
+                className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                {updating === rejectId ? "Đang từ chối…" : "Từ chối đơn"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* View modal */}
       {viewOrder && (
@@ -378,7 +448,7 @@ function OrderHistoryTab() {
                   Chấp nhận
                 </button>
                 <button
-                  onClick={() => { setStatus(viewOrder.id, "REJECTED"); setViewOrder(null); }}
+                  onClick={() => { setRejectId(viewOrder.id); setRejectText(""); setViewOrder(null); }}
                   disabled={updating === viewOrder.id}
                   className="flex-1 py-2.5 rounded-xl border border-red-200 text-red-500 text-sm font-semibold hover:bg-red-50 disabled:opacity-50 transition-colors"
                 >

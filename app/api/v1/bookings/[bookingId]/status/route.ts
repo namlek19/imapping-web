@@ -22,7 +22,17 @@ export async function PATCH(
     return NextResponse.json({ status: 503, message: "Không thể kết nối tới server.", data: null });
   }
 
-  const body = await beRes.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await beRes.json();
+  } catch {
+    return NextResponse.json({
+      status: beRes.status,
+      message: `Backend trả về lỗi HTTP ${beRes.status}`,
+      data: null,
+    });
+  }
+
   return NextResponse.json({
     status: (body.status as number) ?? beRes.status,
     message: (body.message as string) ?? "OK",
