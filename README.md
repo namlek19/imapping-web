@@ -1,8 +1,3 @@
----
-description: "Rules for Next.js App Router, TypeScript, Tailwind CSS - iMapping Web Project."
-globs: **/*.{ts,tsx,js,jsx}
-alwaysApply: true
----
 # Project Overview
 - **Name:** iMapping (Web Platform).
 - **Core USP:** Personalized travel destination recommendations using AI based on user personality and preferences.
