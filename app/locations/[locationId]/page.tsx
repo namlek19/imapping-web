@@ -148,7 +148,7 @@ export default function LocationDetailPage() {
     return (
       <main className="flex-1 flex items-center justify-center px-4">
         <div className="text-center flex flex-col gap-4">
-          <p className="text-gray-500 text-lg">Không tìm thấy địa điểm.</p>
+          <p className="text-gray-500 text-lg">AI đang tính toán</p>
           <button onClick={() => router.back()} className="text-[#008080] font-semibold hover:underline">
             ← Quay lại
           </button>
