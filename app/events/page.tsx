@@ -6,19 +6,19 @@ import { useRouter } from "next/navigation";
 // ── Prizes — matches backend rewards: {5, 10, 20, 50, 100} ──────────────────
 // Arranged to alternate high/low on the wheel for visual balance
 const PRIZES = [
-  { label: "5 điểm",   points: 5,   color: "#94A3B8", textColor: "white" },
-  { label: "50 điểm",  points: 50,  color: "#FF7F50", textColor: "white" },
-  { label: "10 điểm",  points: 10,  color: "#008080", textColor: "white" },
+  { label: "5 điểm", points: 5, color: "#94A3B8", textColor: "white" },
+  { label: "50 điểm", points: 50, color: "#FF7F50", textColor: "white" },
+  { label: "10 điểm", points: 10, color: "#008080", textColor: "white" },
   { label: "100 điểm", points: 100, color: "#059669", textColor: "white" },
-  { label: "20 điểm",  points: 20,  color: "#7C3AED", textColor: "white" },
+  { label: "20 điểm", points: 20, color: "#7C3AED", textColor: "white" },
 ];
 const COINS_TO_IDX: Record<number, number> = { 5: 0, 50: 1, 10: 2, 100: 3, 20: 4 };
 
 // ── Vouchers — matches backend V5/V10/V15, costs 50/100/150 ─────────────────
 const VOUCHERS = [
-  { id: "v1", label: "Voucher giảm 5%",  description: "Áp dụng cho tất cả địa điểm", cost: 1000, icon: "🎟️", voucherType: "V5"  },
-  { id: "v2", label: "Voucher giảm 10%", description: "Áp dụng cho tất cả địa điểm", cost: 1950, icon: "🏷️", voucherType: "V10" },
-  { id: "v3", label: "Voucher giảm 15%", description: "Áp dụng cho tất cả địa điểm", cost: 2450, icon: "💎", voucherType: "V15" },
+  { id: "v1", label: "Voucher giảm 5%", description: "Áp dụng cho tất cả địa điểm", cost: 100, icon: "🎟️", voucherType: "V5" },
+  { id: "v2", label: "Voucher giảm 10%", description: "Áp dụng cho tất cả địa điểm", cost: 150, icon: "🏷️", voucherType: "V10" },
+  { id: "v3", label: "Voucher giảm 15%", description: "Áp dụng cho tất cả địa điểm", cost: 200, icon: "💎", voucherType: "V15" },
 ];
 
 const SEG = PRIZES.length;
@@ -46,25 +46,25 @@ function sliceTextPos(i: number) {
 
 export default function EventsPage() {
   const router = useRouter();
-  const now         = new Date();
-  const today       = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  const year        = now.getFullYear();
-  const month       = now.getMonth();
-  const currentDay  = now.getDate();
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const currentDay = now.getDate();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const monthPrefix = `${year}-${String(month + 1).padStart(2, "0")}`;
 
   // ── State ──
-  const [points, setPoints]           = useState(0);
-  const [streak, setStreak]           = useState(0);
-  const [spinsLeft, setSpinsLeft]     = useState(0);
+  const [points, setPoints] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [spinsLeft, setSpinsLeft] = useState(0);
   const [checkedDays, setCheckedDays] = useState<string[]>([]);
-  const [loaded, setLoaded]           = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   // Spin wheel
-  const [rotation, setRotation]   = useState(0);
+  const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [wonPrize, setWonPrize]   = useState<typeof PRIZES[0] | null>(null);
+  const [wonPrize, setWonPrize] = useState<typeof PRIZES[0] | null>(null);
   const [showSpinPopup, setShowSpinPopup] = useState(false);
   const totalRot = useRef(0);
 
@@ -86,7 +86,7 @@ export default function EventsPage() {
           setSpinsLeft(body.data.remainingSpins ?? 0);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
 
     // Checkin history — try backend endpoint, fall back to localStorage
     fetch("/api/v1/events/checkin/history")
@@ -111,7 +111,7 @@ export default function EventsPage() {
   async function handleCheckin() {
     if (checkedInToday) return;
     try {
-      const res  = await fetch("/api/v1/events/checkin", { method: "POST" });
+      const res = await fetch("/api/v1/events/checkin", { method: "POST" });
       const body = await res.json();
       if (body.status === 200) {
         // body.data = total coins (integer)
@@ -141,7 +141,7 @@ export default function EventsPage() {
 
     let idx = 0;
     try {
-      const res  = await fetch("/api/v1/events/spin", { method: "POST" });
+      const res = await fetch("/api/v1/events/spin", { method: "POST" });
       const body = await res.json();
       if (body.status === 200 && body.data != null) {
         const coinsWon = body.data.coinsWon ?? 0;
@@ -158,12 +158,12 @@ export default function EventsPage() {
 
     setSpinsLeft(0);
 
-    const prize     = PRIZES[idx];
+    const prize = PRIZES[idx];
     const segCenter = idx * (360 / SEG) + (360 / SEG) / 2;
-    const target    = ((180 - segCenter) % 360 + 360) % 360;
-    const cur       = totalRot.current % 360;
-    const delta     = ((target - cur) + 360) % 360 || 360;
-    const final     = totalRot.current + delta + 5 * 360;
+    const target = ((180 - segCenter) % 360 + 360) % 360;
+    const cur = totalRot.current % 360;
+    const delta = ((target - cur) + 360) % 360 || 360;
+    const final = totalRot.current + delta + 5 * 360;
 
     totalRot.current = final;
     setRotation(final);
@@ -180,7 +180,7 @@ export default function EventsPage() {
     if (points < cost) return;
     if (!confirm(`Đổi "${label}" với ${cost} điểm?`)) return;
     try {
-      const res  = await fetch("/api/v1/events/redeem", {
+      const res = await fetch("/api/v1/events/redeem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ voucherType }),
@@ -241,20 +241,20 @@ export default function EventsPage() {
           {/* Calendar dot grid */}
           <div className="flex flex-wrap gap-2">
             {loaded && Array.from({ length: daysInMonth }, (_, i) => {
-              const day  = i + 1;
+              const day = i + 1;
               const date = `${monthPrefix}-${String(day).padStart(2, "0")}`;
-              const done    = checkedDays.includes(date);
+              const done = checkedDays.includes(date);
               const isToday = day === currentDay;
-              const past    = day < currentDay && !done;
+              const past = day < currentDay && !done;
               return (
                 <div
                   key={day}
                   title={`Ngày ${day}`}
                   className={[
                     "w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all",
-                    done    ? "bg-[#008080] text-white shadow-md shadow-teal-400/30" : "",
+                    done ? "bg-[#008080] text-white shadow-md shadow-teal-400/30" : "",
                     isToday && !done ? "ring-2 ring-[#008080] ring-offset-1 bg-teal-50 text-[#008080] animate-pulse" : "",
-                    past    ? "bg-gray-200 text-gray-400" : "",
+                    past ? "bg-gray-200 text-gray-400" : "",
                     !done && !isToday && !past ? "bg-gray-100 text-gray-300" : "",
                   ].join(" ")}
                 >
@@ -381,11 +381,10 @@ export default function EventsPage() {
                     <button
                       onClick={() => handleRedeem(v.cost, v.label, v.voucherType)}
                       disabled={!canAfford}
-                      className={`px-5 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
-                        canAfford
-                          ? "bg-[#008080] text-white hover:bg-teal-700 active:scale-95 shadow-sm shadow-teal-100"
-                          : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      }`}
+                      className={`px-5 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${canAfford
+                        ? "bg-[#008080] text-white hover:bg-teal-700 active:scale-95 shadow-sm shadow-teal-100"
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        }`}
                     >
                       {canAfford ? "Đổi ngay" : "Chưa đủ điểm"}
                     </button>
@@ -435,6 +434,18 @@ export default function EventsPage() {
                 <p className="text-xl font-black text-gray-900 tracking-widest font-mono">{wonVoucher.code}</p>
                 <p className="text-xs text-gray-400 mt-1">Lưu mã này để sử dụng khi đặt dịch vụ</p>
               </div>
+
+              {/* Eye-catching notification banner */}
+              <div className="w-full bg-red-50 border border-red-200 rounded-2xl px-4 py-3 text-left flex items-start gap-2.5 shadow-xs">
+                <span className="text-lg mt-0.5">📸</span>
+                <div>
+                  <p className="text-[10px] font-black text-red-600 uppercase tracking-widest leading-none">LƯU Ý QUAN TRỌNG</p>
+                  <p className="text-xs font-bold text-red-700 mt-1.5 leading-relaxed">
+                    Hãy chụp màn hình voucher này lại và sử dụng khi bộ phận CSKH liên hệ chốt đơn!
+                  </p>
+                </div>
+              </div>
+
               <div className="flex items-center gap-1.5 text-sm text-gray-500">
                 <span>Điểm còn lại:</span>
                 <span className="font-bold text-gray-800">{wonVoucher.remaining} điểm</span>
