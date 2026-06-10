@@ -76,6 +76,7 @@ export default function ProfilePage() {
   const [editingNote, setEditingNote] = useState(false);
   const [savingNote, setSavingNote] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
+  const [fetchingProfile, setFetchingProfile] = useState(false);
 
   useEffect(() => {
     fetch("/api/v1/users/profile")
@@ -99,19 +100,35 @@ export default function ProfilePage() {
 
   async function saveNote() {
     setSavingNote(true);
+    setFetchingProfile(true);
     try {
-      await fetch("/api/v1/users/profile", {
+      const resPatch = await fetch("/api/v1/users/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ selfNote }),
       });
+      const bodyPatch = await resPatch.json();
+      
+      if (bodyPatch.status === 200) {
+        // Refetch profile data to load the new AI analysis
+        const resProfile = await fetch("/api/v1/users/profile");
+        const bodyProfile = await resProfile.json();
+        if (bodyProfile.status === 200) {
+          setProfile(bodyProfile.data);
+          setSelfNote(bodyProfile.data.personality.selfNote ?? "");
+        }
+      }
       setEditingNote(false);
       setNoteSaved(true);
       setTimeout(() => setNoteSaved(false), 2500);
+    } catch (e) {
+      console.error("Error saving note or fetching profile:", e);
     } finally {
       setSavingNote(false);
+      setFetchingProfile(false);
     }
   }
+
 
   function copyCode() {
     if (!profile) return;
@@ -348,13 +365,22 @@ export default function ProfilePage() {
               </div>
 
               {/* Divider */}
-              <div className="border-t border-gray-100 pt-5">
+              <div className="border-t border-gray-100 pt-5 relative">
                 <p className="text-[11px] font-bold tracking-widest uppercase text-gray-400 mb-3">
                   Phân tích cá tính sâu từ AI
                 </p>
-                <p className="text-sm font-light text-gray-600 leading-8 tracking-wide">
-                  {profile.personality.analysis}
-                </p>
+                {fetchingProfile ? (
+                  <div className="py-4 flex flex-col gap-2.5 animate-pulse">
+                    <div className="h-4 bg-gray-100 rounded-md w-full" />
+                    <div className="h-4 bg-gray-100 rounded-md w-11/12" />
+                    <div className="h-4 bg-gray-100 rounded-md w-4/5" />
+                    <div className="h-4 bg-gray-100 rounded-md w-5/6" />
+                  </div>
+                ) : (
+                  <p className="text-sm font-light text-gray-600 leading-8 tracking-wide">
+                    {profile.personality.analysis || "Chưa có phân tích từ AI. Hãy điền ghi chú hoặc làm trắc nghiệm để AI phân tích nhé!"}
+                  </p>
+                )}
               </div>
             </div>
 

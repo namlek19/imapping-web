@@ -87,13 +87,10 @@ export default function QuizPage() {
   const [backendQs, setBackendQs]     = useState<BackendQuestion[]>([]);
 
   const [current, setCurrent]         = useState(0);
-  const [answers, setAnswers]         = useState<number[]>([]); // selected optionId per question
-  const [chosen, setChosen]           = useState<number | null>(null);
+  const [answers, setAnswers]         = useState<number[][]>(QUESTIONS.map(() => [])); // selected optionIds per question
   const [phase, setPhase]             = useState<"quiz" | "submitting" | "done" | "error">("quiz");
   const [aiAdvice, setAiAdvice]       = useState("");
   const [submitError, setSubmitError] = useState("");
-
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch option IDs in the background — UI is hardcoded so quiz shows immediately
   useEffect(() => {
@@ -112,27 +109,32 @@ export default function QuizPage() {
   }
 
   function handleChoose(optionId: number) {
-    if (chosen !== null || phase !== "quiz") return;
-    setChosen(optionId);
-
-    timerRef.current = setTimeout(() => {
-      const next = [...answers.slice(0, current), optionId];
-      setAnswers(next);
-      setChosen(null);
-
-      if (current < QUESTIONS.length - 1) {
-        setCurrent((c) => c + 1);
-      } else {
-        setPhase("submitting");
-        doSubmit(next);
-      }
-    }, 380);
+    if (phase !== "quiz") return;
+    setAnswers((prev) => {
+      const currentSelection = prev[current] || [];
+      const updated = currentSelection.includes(optionId)
+        ? currentSelection.filter((id) => id !== optionId)
+        : [...currentSelection, optionId];
+      const next = [...prev];
+      next[current] = updated;
+      return next;
+    });
   }
 
   function handleBack() {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    setChosen(null);
-    setCurrent((c) => c - 1);
+    if (current > 0) {
+      setCurrent((c) => c - 1);
+    }
+  }
+
+  function handleNext() {
+    if (answers[current].length === 0) return;
+    if (current < QUESTIONS.length - 1) {
+      setCurrent((c) => c + 1);
+    } else {
+      setPhase("submitting");
+      doSubmit(answers.flat());
+    }
   }
 
   async function doSubmit(optionIds: number[]) {
@@ -159,6 +161,7 @@ export default function QuizPage() {
       setPhase("error");
     }
   }
+
 
   // ── Submitting ─────────────────────────────────────────────────────────────
   if (phase === "submitting") {
@@ -221,7 +224,7 @@ export default function QuizPage() {
         <div className="max-w-sm text-center flex flex-col gap-4">
           <p className="text-sm text-red-500">{submitError}</p>
           <button
-            onClick={() => { setPhase("quiz"); setCurrent(0); setAnswers([]); }}
+            onClick={() => { setPhase("quiz"); setCurrent(0); setAnswers(QUESTIONS.map(() => [])); }}
             className="py-2.5 px-6 rounded-xl bg-gray-100 text-sm font-semibold text-gray-700 hover:bg-gray-200 transition-all"
           >
             Thử lại từ đầu
@@ -255,7 +258,7 @@ export default function QuizPage() {
               {q.question}
             </h1>
             <p className="mt-2 text-xs text-gray-400">
-              Câu {current + 1} / {QUESTIONS.length} — chạm để chọn
+              Câu {current + 1} / {QUESTIONS.length} — có thể chọn cả hai
             </p>
           </motion.div>
         </AnimatePresence>
@@ -289,7 +292,7 @@ export default function QuizPage() {
             {q.options.map((opt, i) => {
               const { Icon, title, subtitle } = opt;
               const optId  = getOptionId(current, i);
-              const active = chosen === optId || answers[current] === optId;
+              const active = answers[current]?.includes(optId);
 
               return (
                 <motion.button
@@ -297,7 +300,6 @@ export default function QuizPage() {
                   onClick={() => handleChoose(optId)}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.96 }}
-                  animate={chosen === optId ? { scale: [1, 1.06, 1.02] } : { scale: 1 }}
                   transition={{ duration: 0.18 }}
                   className={`relative flex flex-col items-center gap-4 p-6 rounded-3xl border-2 transition-colors duration-200 cursor-pointer text-center shadow-sm ${
                     active
@@ -351,17 +353,27 @@ export default function QuizPage() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Back button */}
-        {current > 0 && (
-          <div className="flex justify-center">
+        {/* Navigation buttons */}
+        <div className="flex items-center justify-between gap-4 mt-4">
+          {current > 0 ? (
             <button
               onClick={handleBack}
-              className="text-sm text-gray-400 hover:text-gray-600 transition-colors px-4 py-2"
+              className="px-6 py-3 rounded-2xl border border-gray-200 text-gray-600 font-semibold hover:bg-gray-50 active:scale-[0.98] transition-all text-sm"
             >
-              ← Câu trước
+              ← Quay lại
             </button>
-          </div>
-        )}
+          ) : (
+            <div />
+          )}
+
+          <button
+            onClick={handleNext}
+            disabled={answers[current]?.length === 0}
+            className="px-8 py-3 rounded-2xl bg-[#FF7F50] text-white font-bold shadow-md shadow-orange-200 hover:bg-[#e86e3f] disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none active:scale-[0.98] transition-all text-sm"
+          >
+            {current < QUESTIONS.length - 1 ? "Tiếp tục →" : "Hoàn thành ✦"}
+          </button>
+        </div>
 
       </div>
     </main>
