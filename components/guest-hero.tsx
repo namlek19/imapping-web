@@ -63,7 +63,14 @@ export default function GuestHero({ isLoggedIn = false, matches = [], loadingMat
                 <div className="animate-pulse">
                   <div className="h-1.5 w-full bg-gray-200" />
                   <div className="p-6 pb-4 flex flex-col gap-4">
-                    <div className="h-3 w-32 bg-gray-200 rounded-full" />
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-[#008080]/40 animate-bounce [animation-delay:0ms]" />
+                      <div className="h-2 w-2 rounded-full bg-[#008080]/40 animate-bounce [animation-delay:150ms]" />
+                      <div className="h-2 w-2 rounded-full bg-[#008080]/40 animate-bounce [animation-delay:300ms]" />
+                      <span className="text-xs font-semibold text-[#008080]/60 uppercase tracking-widest ml-1">
+                        AI đang phân tích sở thích...
+                      </span>
+                    </div>
                     <div className="flex items-start justify-between gap-4">
                       <div className="h-7 w-48 bg-gray-200 rounded-xl" />
                       <div className="shrink-0 w-16 h-16 rounded-2xl bg-gray-200" />

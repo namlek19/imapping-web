@@ -104,7 +104,24 @@ export default function LocationDetailPage() {
 
     fetch(`/api/v1/locations/${locationId}`, { signal: controller.signal })
       .then((r) => r.json())
-      .then((body) => { if (body.status === 200 && body.data) setLocation(body.data); })
+      .then((body) => {
+        if (body.status === 200 && body.data) {
+          const detail = body.data;
+          // Override tag-based % with AI-based data từ homepage cache
+          try {
+            const raw = localStorage.getItem("aiMatchCache");
+            if (raw) {
+              const cached: { locationId: string; matchPercent: number; matchReason: string }[] = JSON.parse(raw);
+              const hit = cached.find((m) => String(m.locationId) === String(locationId));
+              if (hit && hit.matchPercent > 0) {
+                detail.matchPercent = hit.matchPercent;
+                detail.matchReason = hit.matchReason;
+              }
+            }
+          } catch { /* ignore parse errors */ }
+          setLocation(detail);
+        }
+      })
       .catch(() => {})
       .finally(() => { clearTimeout(timer); setLoading(false); });
 

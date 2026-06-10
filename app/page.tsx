@@ -21,6 +21,7 @@ export default function Home() {
         .then((body) => {
           if (body.status === 200 && Array.isArray(body.data)) {
             setMatches(body.data);
+            localStorage.setItem("aiMatchCache", JSON.stringify(body.data));
           }
         })
         .catch(() => {})

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BE_BASE, getAuthToken, authHeaders } from "@/app/api/v1/_lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ userId: string }> }
