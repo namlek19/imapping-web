@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-export const BE_BASE = "https://api-imapping.coachcafe.shop";
+export const BE_BASE = process.env.NEXT_PUBLIC_BE_BASE || process.env.BE_BASE || "https://api-imapping.coachcafe.shop";
 
 export async function getAuthToken(): Promise<string | null> {
   const cookieStore = await cookies();
