@@ -16,9 +16,9 @@ const COINS_TO_IDX: Record<number, number> = { 5: 0, 50: 1, 10: 2, 100: 3, 20: 4
 
 // ── Vouchers — matches backend V5/V10/V15, costs 50/100/150 ─────────────────
 const VOUCHERS = [
-  { id: "v1", label: "Voucher giảm 5%",  description: "Áp dụng cho tất cả địa điểm", cost: 50,  icon: "🎟️", voucherType: "V5"  },
-  { id: "v2", label: "Voucher giảm 10%", description: "Áp dụng cho tất cả địa điểm", cost: 100, icon: "🏷️", voucherType: "V10" },
-  { id: "v3", label: "Voucher giảm 15%", description: "Áp dụng cho tất cả địa điểm", cost: 150, icon: "💎", voucherType: "V15" },
+  { id: "v1", label: "Voucher giảm 5%",  description: "Áp dụng cho tất cả địa điểm", cost: 1000, icon: "🎟️", voucherType: "V5"  },
+  { id: "v2", label: "Voucher giảm 10%", description: "Áp dụng cho tất cả địa điểm", cost: 1950, icon: "🏷️", voucherType: "V10" },
+  { id: "v3", label: "Voucher giảm 15%", description: "Áp dụng cho tất cả địa điểm", cost: 2450, icon: "💎", voucherType: "V15" },
 ];
 
 const SEG = PRIZES.length;
@@ -352,10 +352,47 @@ export default function EventsPage() {
             <p className="text-sm text-gray-500 mt-1">Dùng điểm tích lũy để nhận ưu đãi hấp dẫn</p>
           </div>
 
-          <div className="flex flex-col items-center justify-center gap-3 py-10 rounded-2xl border border-dashed border-gray-200 bg-gray-50/60 text-center">
-            <span className="text-4xl">🚧</span>
-            <p className="font-bold text-gray-700">Tính năng đang phát triển</p>
-            <p className="text-sm text-gray-400">Kho voucher sẽ sớm được ra mắt, hãy chờ nhé!</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {VOUCHERS.map((v) => {
+              const canAfford = points >= v.cost;
+              return (
+                <div
+                  key={v.id}
+                  className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 flex flex-col justify-between gap-6 hover:shadow-md transition-all duration-200"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex flex-col gap-2">
+                      <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-2xl">
+                        {v.icon}
+                      </div>
+                      <div>
+                        <h3 className="font-black text-gray-900 text-lg leading-tight">{v.label}</h3>
+                        <p className="text-xs text-gray-400 mt-1">{v.description}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 pt-4 border-t border-gray-50 mt-auto">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Giá đổi</span>
+                      <span className="text-sm font-black text-orange-600">{v.cost} điểm</span>
+                    </div>
+
+                    <button
+                      onClick={() => handleRedeem(v.cost, v.label, v.voucherType)}
+                      disabled={!canAfford}
+                      className={`px-5 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
+                        canAfford
+                          ? "bg-[#008080] text-white hover:bg-teal-700 active:scale-95 shadow-sm shadow-teal-100"
+                          : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      }`}
+                    >
+                      {canAfford ? "Đổi ngay" : "Chưa đủ điểm"}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
 
