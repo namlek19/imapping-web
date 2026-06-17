@@ -78,6 +78,12 @@ export default function ProfilePage() {
   const [noteSaved, setNoteSaved] = useState(false);
   const [fetchingProfile, setFetchingProfile] = useState(false);
 
+  // States for editing basic info (DOB, phone)
+  const [editingInfo, setEditingInfo] = useState(false);
+  const [dobInput, setDobInput] = useState("");
+  const [phoneInput, setPhoneInput] = useState("");
+  const [savingInfo, setSavingInfo] = useState(false);
+
   useEffect(() => {
     fetch("/api/v1/users/profile")
       .then((r) => r.json())
@@ -85,6 +91,8 @@ export default function ProfilePage() {
         if (body.status === 200) {
           setProfile(body.data);
           setSelfNote(body.data.personality.selfNote ?? "");
+          setDobInput(body.data.dob ?? "");
+          setPhoneInput(body.data.phone ?? "");
         } else {
           setError(body.message ?? "Không thể tải profile.");
         }
@@ -129,6 +137,42 @@ export default function ProfilePage() {
     }
   }
 
+  async function saveInfo() {
+    if (!profile) return;
+    setSavingInfo(true);
+    try {
+      const resPatch = await fetch("/api/v1/users/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          dob: dobInput || null,
+          phone: phoneInput || null,
+          selfNote: selfNote,
+        }),
+      });
+      const bodyPatch = await resPatch.json();
+      
+      if (bodyPatch.status === 200) {
+        setProfile((prev) =>
+          prev
+            ? {
+                ...prev,
+                dob: dobInput || "",
+                phone: phoneInput || "",
+              }
+            : null
+        );
+        setEditingInfo(false);
+      } else {
+        alert(bodyPatch.message || "Không thể cập nhật thông tin.");
+      }
+    } catch (e) {
+      console.error("Error saving profile info:", e);
+      alert("Đã xảy ra lỗi khi kết nối tới máy chủ.");
+    } finally {
+      setSavingInfo(false);
+    }
+  }
 
   function copyCode() {
     if (!profile) return;
@@ -205,10 +249,85 @@ export default function ProfilePage() {
 
               {/* Thông tin chi tiết */}
               <div className="w-full flex flex-col gap-3 pt-3 border-t border-gray-100">
-                <InfoRow icon="✉️" label="Email" value={profile.email} />
-                <InfoRow icon="🎂" label="Ngày sinh" value={formatDate(profile.dob)} />
-                {profile.phone && (
-                  <InfoRow icon="📱" label="Điện thoại" value={profile.phone} />
+                <div className="flex justify-between items-center mb-1">
+                  <p className="text-[11px] font-bold tracking-widest uppercase text-gray-400">
+                    Thông tin chi tiết
+                  </p>
+                  {!editingInfo && (
+                    <button
+                      onClick={() => {
+                        setEditingInfo(true);
+                        setDobInput(profile.dob || "");
+                        setPhoneInput(profile.phone || "");
+                      }}
+                      className="text-gray-400 hover:text-[#008080] transition-colors"
+                      title="Chỉnh sửa thông tin"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
+                        <path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75 2.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474ZM4.75 7.5A.75.75 0 0 0 4 8.25v.5h-.5a.75.75 0 0 0-.75.75v.5h-.5A.75.75 0 0 0 1.5 10.75v1.5c0 .414.336.75.75.75h1.5a.75.75 0 0 0 .53-.22l4.23-4.23-.53-.53-3.23 3.23Z" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+
+                {editingInfo ? (
+                  <div className="flex flex-col gap-3">
+                    {/* Email - fix cứng */}
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">✉️ Email</span>
+                      <input
+                        type="email"
+                        value={profile.email}
+                        disabled
+                        className="w-full rounded-xl border border-gray-200 bg-gray-100 px-3 py-1.5 text-xs text-gray-400 outline-none cursor-not-allowed"
+                      />
+                    </div>
+
+                    {/* Ngày sinh */}
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">🎂 Ngày sinh</span>
+                      <input
+                        type="date"
+                        value={dobInput}
+                        onChange={(e) => setDobInput(e.target.value)}
+                        className="w-full rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 outline-none transition focus:border-[#008080] focus:ring-2 focus:ring-[#008080]/20"
+                      />
+                    </div>
+
+                    {/* Điện thoại */}
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">📱 Điện thoại</span>
+                      <input
+                        type="text"
+                        value={phoneInput}
+                        onChange={(e) => setPhoneInput(e.target.value)}
+                        placeholder="Nhập số điện thoại"
+                        className="w-full rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 outline-none transition focus:border-[#008080] focus:ring-2 focus:ring-[#008080]/20"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2 justify-end mt-1">
+                      <button
+                        onClick={() => setEditingInfo(false)}
+                        className="px-3 py-1.5 rounded-xl text-[11px] font-semibold text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
+                      >
+                        Huỷ
+                      </button>
+                      <button
+                        onClick={saveInfo}
+                        disabled={savingInfo}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold bg-[#008080] text-white hover:bg-teal-700 disabled:opacity-50 transition-all"
+                      >
+                        {savingInfo ? "Đang lưu…" : "Lưu"}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <InfoRow icon="✉️" label="Email" value={profile.email} />
+                    <InfoRow icon="🎂" label="Ngày sinh" value={formatDate(profile.dob)} />
+                    <InfoRow icon="📱" label="Điện thoại" value={profile.phone || "Chưa cập nhật"} />
+                  </>
                 )}
               </div>
             </div>
