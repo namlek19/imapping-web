@@ -11,7 +11,11 @@ export default function BannerPopup() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setOpen(true), 400);
+    if (sessionStorage.getItem("banner_seen")) return;
+    const timer = setTimeout(() => {
+      setOpen(true);
+      sessionStorage.setItem("banner_seen", "1");
+    }, 400);
     return () => clearTimeout(timer);
   }, []);
 
@@ -27,7 +31,7 @@ export default function BannerPopup() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={() => setOpen(false)}
-            className="fixed inset-0 z-[999] bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-999 bg-black/50 backdrop-blur-sm"
           />
 
           {/* Modal */}
@@ -37,11 +41,11 @@ export default function BannerPopup() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 16 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
-            className="fixed inset-0 z-[1000] flex items-center justify-center px-4 pointer-events-none"
+            className="fixed inset-0 z-1000 flex items-center justify-center px-4 pointer-events-none"
           >
             <div className="relative pointer-events-auto max-w-lg w-full">
               {/* Glow ring */}
-              <div className="absolute -inset-0.5 rounded-3xl bg-gradient-to-br from-[#FF7F50]/60 via-[#008080]/40 to-[#FF7F50]/60 blur-sm" />
+              <div className="absolute -inset-0.5 rounded-3xl bg-linear-to-br from-accent/60 via-[#008080]/40 to-accent/60 blur-sm" />
 
               {/* Card */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-white">
@@ -61,7 +65,7 @@ export default function BannerPopup() {
                   </p>
                   <button
                     onClick={() => setOpen(false)}
-                    className="text-xs font-bold text-white bg-gradient-to-r from-[#FF7F50] to-[#008080] px-4 py-1.5 rounded-full hover:opacity-90 active:scale-95 transition-all"
+                    className="text-xs font-bold text-white bg-linear-to-r from-accent to-[#008080] px-4 py-1.5 rounded-full hover:opacity-90 active:scale-95 transition-all"
                   >
                     Bắt đầu →
                   </button>
