@@ -177,7 +177,7 @@ export default function PlansPage() {
           <div className="flex items-start gap-4">
             <div className="mt-1 w-1 h-12 rounded-full bg-accent shrink-0" />
             <div>
-              <h1 className="text-5xl font-black tracking-tighter leading-none text-gray-900">
+              <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-none text-gray-900">
                 Kế hoạch <span className="text-accent">của bạn</span>
               </h1>
               <p className="mt-2 text-sm text-gray-400">Lên lịch, mời bạn bè và chia sẻ chi phí</p>

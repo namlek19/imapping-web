@@ -35,6 +35,7 @@ export default function ChatFab() {
   const [fabOpen, setFabOpen] = useState(false);
   const [mode, setMode] = useState<ChatMode>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [sending, setSending] = useState(false);
   const [input, setInput] = useState("");
@@ -44,6 +45,13 @@ export default function ChatFab() {
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("token"));
   }, [pathname]);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // Listen for external open-chat events (e.g. from location detail page)
   useEffect(() => {
@@ -197,11 +205,17 @@ export default function ChatFab() {
         />
       )}
 
-      {/* Large chat panel — ~2/3 viewport, anchored bottom-right */}
+      {/* Large chat panel — full-screen on mobile, bottom-right on desktop */}
       {mode && (
         <div
-          className="fixed bottom-5 right-5 z-50 flex flex-col rounded-3xl shadow-2xl border border-gray-100 bg-white overflow-hidden"
-          style={{
+          className={`fixed z-50 flex flex-col shadow-2xl border border-gray-100 bg-white overflow-hidden ${
+            isMobile
+              ? "inset-0 rounded-none border-none"
+              : "bottom-5 right-5 rounded-3xl"
+          }`}
+          style={isMobile ? {
+            animation: "chatSlideUp 0.28s ease-out both",
+          } : {
             width: "min(66vw, 900px)",
             height: "min(66vh, 780px)",
             minWidth: "340px",

@@ -73,13 +73,13 @@ export default function LocationsPage() {
 
   return (
     <main className={`${plusJakarta.className} flex-1`}>
-      <div className="max-w-7xl mx-auto px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-16">
 
         {/* Header */}
-        <div className="mb-14 flex items-start gap-4">
+        <div className="mb-8 md:mb-14 flex items-start gap-4">
           <div className="mt-1 w-1 h-12 rounded-full bg-linear-to-b from-accent to-[#008080] shrink-0" />
           <div>
-            <h1 className="text-5xl font-black tracking-tighter leading-none">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">
               Danh sách{" "}
               <span className="bg-linear-to-r from-[#008080] to-accent bg-clip-text text-transparent">địa điểm</span>
             </h1>
@@ -91,11 +91,30 @@ export default function LocationsPage() {
           </div>
         </div>
 
-        {/* 2-column layout */}
-        <div className="flex gap-16 items-start">
+        {/* Mobile: horizontal category scroll */}
+        <div className="md:hidden overflow-x-auto pb-3 mb-6 -mx-4 px-4 flex gap-2 scrollbar-hide">
+          {CATEGORIES.map((cat) => {
+            const isActive = activeCategory === cat.name;
+            return (
+              <button
+                key={cat.name}
+                onClick={() => pickCategory(cat.name)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 shrink-0 ${
+                  isActive ? cat.active : `${cat.inactive} hover:brightness-95`
+                }`}
+              >
+                <span className="text-sm leading-none">{cat.emoji}</span>
+                <span>{cat.name}</span>
+              </button>
+            );
+          })}
+        </div>
 
-          {/* Sidebar */}
-          <aside className="w-52 shrink-0 sticky top-24 flex flex-col gap-2.5">
+        {/* Layout: sidebar on desktop, full-width on mobile */}
+        <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
+
+          {/* Sidebar — desktop only */}
+          <aside className="hidden md:flex w-52 shrink-0 sticky top-24 flex-col gap-2.5">
             <p className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mb-1 px-1">
               Danh mục
             </p>

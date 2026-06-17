@@ -19,7 +19,7 @@ export default function GuestHero({ isLoggedIn = false, matches = [], loadingMat
   return (
     <main className="flex-1 flex flex-col relative">
       {/* Hero */}
-      <section className="relative flex-1 flex flex-col justify-center px-6 py-20">
+      <section className="relative flex-1 flex flex-col justify-center px-4 md:px-6 py-10 md:py-20">
         <div className={`relative z-10 max-w-6xl mx-auto w-full ${showSuggestion ? "grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" : "flex flex-col items-center text-center"}`}>
 
           {/* Left: hero text */}
@@ -29,10 +29,10 @@ export default function GuestHero({ isLoggedIn = false, matches = [], loadingMat
             </span>
 
             <h1 className="flex flex-col gap-1">
-              <span className="text-6xl sm:text-8xl font-black tracking-tight text-[#FF7F50] leading-none">
+              <span className="text-5xl sm:text-8xl font-black tracking-tight text-[#FF7F50] leading-none">
                 iMapping
               </span>
-              <span className="text-5xl sm:text-6xl font-bold leading-tight text-gray-900">
+              <span className="text-3xl sm:text-6xl font-bold leading-tight text-gray-900">
                 Hành trình nào{" "}
                 <span className="bg-linear-to-r from-[#008080] to-[#FF7F50] bg-clip-text text-transparent">
                   kể về bạn

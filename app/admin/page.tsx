@@ -105,9 +105,19 @@ const NAV_ITEMS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   },
 ];
 
-function Sidebar({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
+function Sidebar({ active, onChange, mobileOpen, onClose }: {
+  active: Tab;
+  onChange: (t: Tab) => void;
+  mobileOpen?: boolean;
+  onClose?: () => void;
+}) {
   return (
-    <aside className="w-60 shrink-0 bg-slate-950 min-h-[calc(100vh-3.5rem)] flex flex-col">
+    <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 top-14 z-30 bg-black/50 md:hidden" onClick={onClose} />
+      )}
+      <aside className={`fixed md:relative z-40 md:z-auto top-14 md:top-auto bottom-0 md:bottom-auto left-0 w-60 shrink-0 bg-slate-950 min-h-[calc(100vh-3.5rem)] flex flex-col transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
       {/* Brand */}
       <div className="px-5 pt-6 pb-5">
         <span className={`${spaceGrotesk.className} text-base font-bold text-white`}>iMapping</span>
@@ -137,6 +147,7 @@ function Sidebar({ active, onChange }: { active: Tab; onChange: (t: Tab) => void
         })}
       </nav>
     </aside>
+    </>
   );
 }
 
@@ -274,15 +285,16 @@ function OrderHistoryTab() {
             Chưa có đơn đặt chỗ nào
           </div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400">Mã đơn</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400">Khách hàng</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400">Địa điểm</th>
-                <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400">Số người</th>
-                <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400">Ngày đặt</th>
-                <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400">Thao tác</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Mã đơn</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Khách hàng</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Địa điểm</th>
+                <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Số người</th>
+                <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Ngày đặt</th>
+                <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -336,6 +348,7 @@ function OrderHistoryTab() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
@@ -570,14 +583,15 @@ function LocationsTab() {
       ) : (
         <>
           <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50">
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400">Địa điểm</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400">Địa chỉ</th>
-                  <th className="text-center px-5 py-3 text-xs font-semibold text-gray-400">Danh mục</th>
-                  <th className="text-center px-5 py-3 text-xs font-semibold text-gray-400">Đánh giá</th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold text-gray-400">Giá / người</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Địa điểm</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Địa chỉ</th>
+                  <th className="text-center px-5 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Danh mục</th>
+                  <th className="text-center px-5 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Đánh giá</th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Giá / người</th>
                   <th className="px-5 py-3" />
                 </tr>
               </thead>
@@ -640,6 +654,7 @@ function LocationsTab() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Pagination */}
@@ -1076,10 +1091,10 @@ function CSKHTab() {
   return (
     <>
       <SectionHeader title="CSKH" sub="Hỗ trợ và tư vấn khách hàng qua chat" />
-      <div className="bg-white rounded-xl border border-slate-100 overflow-hidden flex" style={{ height: "calc(100vh - 13rem)" }}>
+      <div className="bg-white rounded-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row" style={{ height: "calc(100vh - 13rem)", minHeight: "400px" }}>
 
         {/* Left: user list */}
-        <div className="w-72 shrink-0 border-r border-slate-100 flex flex-col">
+        <div className="w-full md:w-72 shrink-0 border-b md:border-b-0 md:border-r border-slate-100 flex flex-col h-48 md:h-auto">
           <div className="px-4 py-3 border-b border-slate-100">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Người dùng</p>
           </div>
@@ -1325,14 +1340,15 @@ function DashboardTab({ data, loading, fetchError, onRefresh, refreshing }: { da
           <span className="text-xs text-gray-400 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-full">{recentUsers.length} bản ghi</span>
         </div>
 
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-slate-100">
-              <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400">Người dùng</th>
-              <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400">Email</th>
-              <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400">Tổng phiên</th>
-              <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400">Hoạt động cuối</th>
-              <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400">Trạng thái</th>
+              <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Người dùng</th>
+              <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Email</th>
+              <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Tổng phiên</th>
+              <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Hoạt động cuối</th>
+              <th className="text-center px-6 py-3 text-xs font-semibold text-gray-400 whitespace-nowrap">Trạng thái</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -1363,6 +1379,7 @@ function DashboardTab({ data, loading, fetchError, onRefresh, refreshing }: { da
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
@@ -1379,6 +1396,7 @@ export default function AdminPage() {
   const [adminName, setAdminName]       = useState("");
   const [activeTab, setActiveTab]       = useState<Tab>("dashboard");
   const [authReady, setAuthReady]       = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   function fetchStats(isRefresh = false) {
     if (isRefresh) { setRefreshing(true); setData(null); }
@@ -1423,8 +1441,18 @@ export default function AdminPage() {
     <div className={`${plusJakarta.className} min-h-screen bg-slate-50 flex flex-col`}>
 
       {/* Top bar */}
-      <header className="sticky top-0 z-40 bg-white border-b border-slate-100 h-14 flex items-center px-6 justify-between">
+      <header className="sticky top-0 z-40 bg-white border-b border-slate-100 h-14 flex items-center px-4 md:px-6 justify-between">
         <div className="flex items-center gap-2">
+          {/* Hamburger — mobile only */}
+          <button
+            className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors mr-1"
+            onClick={() => setMobileSidebarOpen((v) => !v)}
+            aria-label="Menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+              <path fillRule="evenodd" d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Zm0 5.25a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
+            </svg>
+          </button>
           <span className={`${spaceGrotesk.className} text-base font-bold text-accent`}>iMapping</span>
           <span className="text-slate-300 text-sm">/</span>
           <span className="text-sm text-slate-500 font-medium">Admin</span>
@@ -1455,8 +1483,13 @@ export default function AdminPage() {
 
       {/* Body */}
       <div className="flex flex-1">
-        <Sidebar active={activeTab} onChange={setActiveTab} />
-        <main className="flex-1 min-w-0 px-8 py-7">
+        <Sidebar
+          active={activeTab}
+          onChange={(t) => { setActiveTab(t); setMobileSidebarOpen(false); }}
+          mobileOpen={mobileSidebarOpen}
+          onClose={() => setMobileSidebarOpen(false)}
+        />
+        <main className="flex-1 min-w-0 px-4 md:px-8 py-5 md:py-7">
           {activeTab === "dashboard"    && <DashboardTab data={data} loading={loadingStats} fetchError={fetchError} onRefresh={() => fetchStats(true)} refreshing={refreshing} />}
           {activeTab === "orders"       && <OrderHistoryTab />}
           {activeTab === "cskh"         && <CSKHTab />}

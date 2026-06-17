@@ -10,7 +10,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto bg-[#f0eee9] py-12">
-      <div className="mx-auto max-w-6xl px-8 flex flex-col sm:flex-row sm:justify-between gap-8">
+      <div className="mx-auto max-w-6xl px-4 md:px-8 flex flex-col sm:flex-row sm:justify-between gap-8">
 
         {/* Cột 1 — Logo & slogan */}
         <div className="flex flex-col gap-2">

@@ -46,13 +46,15 @@ function formatDate(iso: string | null | undefined) {
   return `${d}/${m}/${y}`;
 }
 
-function getInitials(name: string) {
+function getInitials(name: string | null | undefined) {
+  if (!name) return "?";
   return name
     .split(" ")
     .slice(-2)
     .map((w) => w[0])
+    .filter(Boolean)
     .join("")
-    .toUpperCase();
+    .toUpperCase() || "?";
 }
 
 const TAG_COLORS = [
@@ -210,7 +212,7 @@ export default function ProfilePage() {
           <p className="text-xs font-semibold tracking-widest uppercase text-[#008080] mb-1">
             ✦ Hồ sơ cá nhân
           </p>
-          <h1 className="text-4xl font-black tracking-tighter text-gray-900">
+          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-gray-900">
             Của tôi
           </h1>
         </div>
@@ -224,26 +226,30 @@ export default function ProfilePage() {
             <div className="bg-white rounded-3xl shadow-sm p-6 flex flex-col items-center gap-4">
               {/* Avatar */}
               <div className="relative">
-                <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#FF7F50] to-[#008080] flex items-center justify-center shadow-lg">
+                <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#FF7F50] to-[#008080] flex items-center justify-center shadow-lg overflow-hidden">
                   {profile.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={profile.avatarUrl}
-                      alt={profile.name}
+                      alt=""
                       className="w-full h-full rounded-full object-cover"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
                     />
-                  ) : (
-                    <span className={`${spaceGrotesk.className} text-3xl font-bold text-white`}>
-                      {getInitials(profile.name)}
-                    </span>
-                  )}
+                  ) : null}
+                  {/* Initials — hiện khi không có ảnh hoặc ảnh lỗi */}
+                  <span
+                    className={`${spaceGrotesk.className} text-3xl font-bold text-white absolute inset-0 flex items-center justify-center`}
+                    aria-hidden={!!profile.avatarUrl}
+                  >
+                    {getInitials(profile.name)}
+                  </span>
                 </div>
                 <div className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-green-400 border-2 border-white" />
               </div>
 
               {/* Tên */}
               <div className="text-center">
-                <p className="text-xl font-black text-gray-900">{profile.name}</p>
+                <p className="text-xl font-black text-gray-900">{profile.name || "Người dùng"}</p>
                 <p className="text-xs text-gray-400 mt-0.5">Thành viên iMapping</p>
               </div>
 
@@ -339,7 +345,7 @@ export default function ProfilePage() {
               </p>
 
               <div className="flex items-center justify-between gap-3">
-                <span className={`${spaceGrotesk.className} text-4xl font-black tracking-widest text-[#FF6B6B]`}>
+                <span className={`${spaceGrotesk.className} text-2xl md:text-4xl font-black tracking-widest text-[#FF6B6B]`}>
                   {profile.userCode}
                 </span>
                 <button

@@ -207,7 +207,7 @@ export default function EventsPage() {
           <div className="flex items-start gap-4">
             <div className="mt-1 w-1 h-12 rounded-full bg-accent shrink-0" />
             <div>
-              <h1 className="text-5xl font-black tracking-tighter leading-none text-gray-900">
+              <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-none text-gray-900">
                 Tích điểm <span className="text-accent">săn quà</span>
               </h1>
               <p className="mt-2 text-sm text-gray-400">Điểm danh, quay thưởng và đổi voucher mỗi ngày</p>
@@ -232,7 +232,7 @@ export default function EventsPage() {
         </div>
 
         {/* ── 1. Điểm danh ── */}
-        <section className="bg-white/60 backdrop-blur-md rounded-3xl border border-white/80 shadow-xl p-8 flex flex-col gap-6">
+        <section className="bg-white/60 backdrop-blur-md rounded-3xl border border-white/80 shadow-xl p-5 md:p-8 flex flex-col gap-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">📅 Điểm danh hàng ngày</h2>
             <p className="text-sm text-gray-500 mt-1">Điểm danh mỗi ngày để nhận 10 điểm + 1 lượt quay</p>
@@ -269,19 +269,19 @@ export default function EventsPage() {
               onClick={handleCheckin}
               disabled={checkedInToday}
               className={[
-                "px-10 py-4 rounded-2xl font-bold text-lg shadow-lg transition-all duration-200",
+                "px-6 md:px-10 py-3 md:py-4 rounded-2xl font-bold text-base md:text-lg shadow-lg transition-all duration-200 text-center",
                 checkedInToday
                   ? "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
                   : "bg-[#008080] text-white shadow-teal-400/30 hover:bg-[#006666] active:scale-95 animate-bounce",
               ].join(" ")}
             >
-              {checkedInToday ? "✓ Đã điểm danh hôm nay" : "🎁 Điểm danh nhận 10 điểm + 1 lượt quay"}
+              {checkedInToday ? "✓ Đã điểm danh hôm nay" : "🎁 Điểm danh +10 điểm & 1 lượt quay"}
             </button>
           </div>
         </section>
 
         {/* ── 2. Vòng quay ── */}
-        <section className="bg-white/60 backdrop-blur-md rounded-3xl border border-white/80 shadow-xl p-8 flex flex-col gap-6">
+        <section className="bg-white/60 backdrop-blur-md rounded-3xl border border-white/80 shadow-xl p-5 md:p-8 flex flex-col gap-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">🎰 Vòng quay may mắn</h2>
             <p className="text-sm text-gray-500 mt-1">
@@ -293,11 +293,12 @@ export default function EventsPage() {
           </div>
 
           <div className="flex flex-col items-center gap-4">
-            <div className="relative flex items-center justify-center">
+            <div className="relative flex items-center justify-center w-full max-w-100">
               <svg
-                width={CX * 2}
-                height={CY * 2}
+                viewBox="0 0 400 400"
                 style={{
+                  width: "min(400px, 85vw)",
+                  height: "min(400px, 85vw)",
                   transform: `rotate(${rotation}deg)`,
                   transition: isSpinning ? "transform 3.6s cubic-bezier(0.17,0.67,0.12,0.99)" : "none",
                   display: "block",
@@ -346,7 +347,7 @@ export default function EventsPage() {
         </section>
 
         {/* ── 3. Đổi voucher ── */}
-        <section className="bg-white/60 backdrop-blur-md rounded-3xl border border-white/80 shadow-xl p-8 flex flex-col gap-6">
+        <section className="bg-white/60 backdrop-blur-md rounded-3xl border border-white/80 shadow-xl p-5 md:p-8 flex flex-col gap-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">🎁 Đổi điểm lấy voucher</h2>
             <p className="text-sm text-gray-500 mt-1">Dùng điểm tích lũy để nhận ưu đãi hấp dẫn</p>
