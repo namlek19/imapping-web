@@ -1,4 +1,4 @@
-﻿export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from "next/server";
 import { BE_BASE, getAuthToken, authHeaders } from "@/app/api/v1/_lib/auth";
@@ -25,14 +25,14 @@ export async function GET() {
 
 export async function PATCH(req: NextRequest) {
   const token = await getAuthToken();
-  const { selfNote, personalityTags } = await req.json();
+  const { selfNote, personalityTags, dob, phone } = await req.json();
 
   let beRes: Response;
   try {
     beRes = await fetch(`${BE_BASE}/api/v1/users/profile`, {
       method: "PATCH",
       headers: authHeaders(token),
-      body: JSON.stringify({ selfNote, personalityTags }),
+      body: JSON.stringify({ selfNote, personalityTags, dob, phone }),
     });
   } catch {
     return NextResponse.json({ status: 503, message: "Không thể kết nối tới server.", data: null }, { status: 503 });
