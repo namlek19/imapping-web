@@ -81,6 +81,8 @@ export async function GET(
       matchPercent: d.matchPercentage ?? 0,
       matchReason: d.matchReason ?? "",
       aiComment: d.aiComment ?? "",
+      latitude: (d.latitude as number | null) ?? null,
+      longitude: (d.longitude as number | null) ?? null,
       comments,
     },
   });
