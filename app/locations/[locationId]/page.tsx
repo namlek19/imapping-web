@@ -8,6 +8,9 @@ import HeroPhotoStack from "@/components/hero-photo-stack";
 import AnimatedBackButton from "@/components/animated-back-button";
 import PriceEstimateCard from "@/components/price-estimate-card";
 import BookingModal from "@/components/booking-modal";
+import dynamic from "next/dynamic";
+
+const LocationMap = dynamic(() => import("@/components/location-map"), { ssr: false });
 
 interface Comment {
   commentId: string;
@@ -25,6 +28,8 @@ interface LocationDetail extends LocationItem {
   matchReason: string;
   aiComment: string;
   comments: Comment[];
+  latitude: number | null;
+  longitude: number | null;
 }
 
 const AVATAR_COLORS = [
@@ -287,6 +292,11 @@ export default function LocationDetailPage() {
         {/* ── Right: booking card ── */}
         <div className="md:col-span-1">
           <div className="sticky top-32 bg-white rounded-2xl border border-slate-100 shadow-xl p-6 flex flex-col gap-5">
+
+            {/* Map */}
+            {location.latitude && location.longitude && (
+              <LocationMap lat={location.latitude} lng={location.longitude} name={location.name} />
+            )}
 
             {/* Price */}
             {priceDisplay && <PriceEstimateCard priceText={priceDisplay} />}
