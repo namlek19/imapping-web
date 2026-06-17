@@ -102,20 +102,41 @@ export default function LocationDetailPage() {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 20000);
 
-    fetch(`/api/v1/locations/${locationId}`, { signal: controller.signal })
+    const token = localStorage.getItem("token");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    fetch(`/api/v1/locations/${locationId}`, { 
+      signal: controller.signal,
+      headers
+    })
       .then((r) => r.json())
       .then((body) => {
         if (body.status === 200 && body.data) {
           const detail = body.data;
-          // Override tag-based % with AI-based data từ homepage cache
+          
+          if (detail.matchPercentage !== undefined && detail.matchPercentage !== null) {
+            detail.matchPercent = detail.matchPercentage;
+          }
+          
           try {
             const raw = localStorage.getItem("aiMatchCache");
             if (raw) {
               const cached: { locationId: string; matchPercent: number; matchReason: string }[] = JSON.parse(raw);
               const hit = cached.find((m) => String(m.locationId) === String(locationId));
-              if (hit && hit.matchPercent > 0) {
-                detail.matchPercent = hit.matchPercent;
-                detail.matchReason = hit.matchReason;
+              if (hit) {
+                if (detail.matchPercent === undefined || detail.matchPercent === null || detail.matchPercent === 0) {
+                  detail.matchPercent = hit.matchPercent;
+                }
+                const isApiReasonSimple = !detail.matchReason || 
+                  detail.matchReason === "N/A" || 
+                  detail.matchReason.startsWith("Phù hợp với gu") || 
+                  detail.matchReason.startsWith("Khá phù hợp");
+                if (isApiReasonSimple) {
+                  detail.matchReason = hit.matchReason;
+                }
               }
             }
           } catch { /* ignore parse errors */ }
