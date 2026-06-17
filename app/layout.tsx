@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import ChatFab from "@/components/chat-fab";
+import BannerPopup from "@/components/banner-popup";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./globals.css";
 
@@ -44,6 +45,7 @@ export default function RootLayout({
           {children}
           <Footer />
           <ChatFab />
+          <BannerPopup />
         </GoogleOAuthProvider>
       </body>
     </html>
