@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import ChatFab from "@/components/chat-fab";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -38,10 +39,12 @@ export default function RootLayout({
           <div className="blob-2 absolute top-1/4 -right-32 w-120 h-120 rounded-full bg-accent/6 blur-3xl" />
           <div className="blob-3 absolute bottom-0 left-1/3 w-104 h-104 rounded-full bg-amber-200/8 blur-3xl" />
         </div>
-        <Navbar />
-        {children}
-        <Footer />
-        <ChatFab />
+        <GoogleOAuthProvider clientId="351182355762-7j17ngnm7et9rivgn5sci4dt36hotjro.apps.googleusercontent.com">
+          <Navbar />
+          {children}
+          <Footer />
+          <ChatFab />
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
