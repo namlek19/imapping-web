@@ -128,7 +128,7 @@ export default function Navbar() {
     </>
   );
 
-  const searchInputJSX = (ref: React.RefObject<HTMLInputElement>) => (
+  const searchInputJSX = (ref: React.RefObject<HTMLInputElement | null>) => (
     <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100/80 border border-slate-200/60 focus-within:border-accent/40 focus-within:bg-white transition-all duration-200">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-gray-400 shrink-0">
         <path fillRule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clipRule="evenodd" />
