@@ -16,9 +16,9 @@ const COINS_TO_IDX: Record<number, number> = { 5: 0, 50: 1, 10: 2, 100: 3, 20: 4
 
 // ── Vouchers — matches backend V5/V10/V15, costs 50/100/150 ─────────────────
 const VOUCHERS = [
-  { id: "v1", label: "Voucher giảm 5%", description: "Áp dụng cho tất cả địa điểm", cost: 100, icon: "🎟️", voucherType: "V5" },
-  { id: "v2", label: "Voucher giảm 10%", description: "Áp dụng cho tất cả địa điểm", cost: 150, icon: "🏷️", voucherType: "V10" },
-  { id: "v3", label: "Voucher giảm 15%", description: "Áp dụng cho tất cả địa điểm", cost: 200, icon: "💎", voucherType: "V15" },
+  { id: "v1", label: "Voucher giảm 5%", description: "Áp dụng cho tất cả địa điểm", cost: 500, icon: "🎟️", voucherType: "V5" },
+  { id: "v2", label: "Voucher giảm 10%", description: "Áp dụng cho tất cả địa điểm", cost: 1000, icon: "🏷️", voucherType: "V10" },
+  { id: "v3", label: "Voucher giảm 15%", description: "Áp dụng cho tất cả địa điểm", cost: 1500, icon: "💎", voucherType: "V15" },
 ];
 
 const SEG = PRIZES.length;
