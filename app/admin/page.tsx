@@ -183,6 +183,7 @@ interface Order {
   bookingDate: string;
   note: string;
   status: "PENDING" | "ACCEPTED" | "REJECTED" | "CANCELLED";
+  quanDoiTac: string;
 }
 
 function mapStatus(s: string): Order["status"] {
@@ -218,6 +219,7 @@ function OrderHistoryTab() {
             bookingDate: String(b.bookingDate ?? ""),
             note: String(b.note ?? ""),
             status: mapStatus(String(b.status ?? "PENDING")),
+            quanDoiTac: String(b.quanDoiTac ?? "no"),
           })));
         } else {
           setError(body.message ?? "Không tải được danh sách đặt chỗ");
@@ -309,7 +311,16 @@ function OrderHistoryTab() {
                       <span className="font-medium text-gray-800">{o.user}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{o.location}</td>
+                  <td className="px-6 py-4 text-gray-600">
+                    <div className="flex items-center gap-2">
+                      <span>{o.location}</span>
+                      {o.quanDoiTac === "yes" && (
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold shrink-0">
+                          Đối tác
+                        </span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 text-center font-semibold tabular-nums text-gray-700">{o.numberOfPeople} người</td>
                   <td className="px-6 py-4 text-center text-gray-400 text-xs">{fmtDate(o.bookingDate)}</td>
                   <td className="px-6 py-4">
@@ -437,7 +448,16 @@ function OrderHistoryTab() {
               {[
                 { label: "Khách hàng",   value: viewOrder.user },
                 { label: "Số điện thoại", value: viewOrder.phone },
-                { label: "Địa điểm",    value: viewOrder.location },
+                { label: "Địa điểm",    value: (
+                  <span className="flex items-center gap-1.5 justify-end">
+                    <span>{viewOrder.location}</span>
+                    {viewOrder.quanDoiTac === "yes" && (
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-bold shrink-0 uppercase tracking-wider">
+                        Đối tác
+                      </span>
+                    )}
+                  </span>
+                ) },
                 { label: "Số người",    value: `${viewOrder.numberOfPeople} người` },
                 { label: "Ngày đặt",    value: fmtDate(viewOrder.bookingDate) },
                 { label: "Ghi chú",     value: viewOrder.note || "—" },
